@@ -8,5 +8,5 @@ class Layer():
         self.n_conn = n_conn
         self.n_neur = n_neur
         self.type = layer_type
-        self.b = np.random.rand(n_neur) * 2 - 1
+        self.b = np.random.rand(1, n_neur) * 2 - 1
         self.W = np.random.rand(n_conn, n_neur) * 2 - 1
