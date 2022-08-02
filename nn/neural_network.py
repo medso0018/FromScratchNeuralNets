@@ -24,44 +24,70 @@ class NeuralNetwork():
         )
 
     # train
-    def fit(self, X_train, y_train, epoch=1000, lr=0.001):
+    def fit(self, X, y, epoch=1000, lr=0.05):
+
         for _ in range(epoch):
-            _output = self.__forward_propagation(X_train)
-            _delta = self.__back_propagation(y_train, _output)
-            self.__optimize(_output, _delta, lr, X_train, y_train)
-            self.loss_f[0](_output[-1][1], y_train)
+
+            _output = self.__forward_propagation(X)
+            _delta = self.__back_propagation(y, _output)
+            self.__optimize(_output, _delta, lr)
+            # if epoch % 500 == 0:
+            #     print(self.loss_f[0](_output[-1], y_train))
+
+            # output = [X]
+            # for layer in self.layers:
+            #     z = output[-1] @ layer.W + layer.b
+            #     a = layer.act_f[0](z)
+            #     output.append(a)
+
+            # delta = []
+            # for l in reversed(range(0, len(self.layers))):
+            #     a = output[l+1]
+            #     if l == len(self.layers) - 1:
+            #         delta.insert(
+            #             0, self.loss_f[1](y, a) * self.layers[l].act_f[1](a))
+            #     else:
+            #         delta.insert(
+            #             0, delta[0] @ _W.T * self.layers[l].act_f[1](a))
+
+            #     _W = self.layers[l].W
+
+            #     self.layers[l].b = self.layers[l].b - \
+            #         np.mean(delta[0], axis=0, keepdims=True) * lr
+            #     self.layers[l].W = self.layers[l].W - \
+            #         output[l].T @ delta[0] * lr
+
         return self
 
     # prediction
     def predict(self, X_test):
-        return self.__forward_propagation(X_test)[-1][1]
+        return self.__forward_propagation(X_test)[-1]
 
     # forward propagation
     def __forward_propagation(self, X):
-        output = [(None, X)]
+        output = [X]
         for layer in self.layers:
-            z = output[-1][1] @ layer.W + layer.b
-            a = layer.act_f[0](z)
-            output.append((z, a))
+            a = layer.act_f[0](output[-1] @ layer.W + layer.b)
+            output.append(a)
         return output
 
     # backward propagation
     def __back_propagation(self, y, output):
         delta = []
         for l in reversed(range(0, len(self.layers))):
-            _, a = output[l+1]
+            a = output[l+1]
             if self.layers[l].type == 'output_layer':
                 delta.insert(
-                    0, self.loss_f[1](y[:, np.newaxis], a) * self.layers[l].act_f[1](a))
+                    0, self.loss_f[1](a, y) * self.layers[l].act_f[1](a))
             else:
                 delta.insert(
                     0, delta[0] @ self.layers[l+1].W.T * self.layers[l].act_f[1](a))
         return delta
 
     # optimization
-    def __optimize(self, output, delta, lr, X, y):
+    def __optimize(self, output, delta, lr):
         for l in reversed(range(0, len(self.layers))):
-            _, a = output[l]
-            self.layers[l].W = self.layers[l].W - a.T @ delta[l] * lr
+            d = output[l]
             self.layers[l].b = self.layers[l].b - \
                 np.mean(delta[l], axis=0, keepdims=True) * lr
+            self.layers[l].W = self.layers[l].W - d.T @ delta[l] * lr
