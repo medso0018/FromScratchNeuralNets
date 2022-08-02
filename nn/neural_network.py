@@ -27,35 +27,9 @@ class NeuralNetwork():
     def fit(self, X, y, epoch=1000, lr=0.05):
 
         for _ in range(epoch):
-
             _output = self.__forward_propagation(X)
             _delta = self.__back_propagation(y, _output)
             self.__optimize(_output, _delta, lr)
-            # if epoch % 500 == 0:
-            #     print(self.loss_f[0](_output[-1], y_train))
-
-            # output = [X]
-            # for layer in self.layers:
-            #     z = output[-1] @ layer.W + layer.b
-            #     a = layer.act_f[0](z)
-            #     output.append(a)
-
-            # delta = []
-            # for l in reversed(range(0, len(self.layers))):
-            #     a = output[l+1]
-            #     if l == len(self.layers) - 1:
-            #         delta.insert(
-            #             0, self.loss_f[1](y, a) * self.layers[l].act_f[1](a))
-            #     else:
-            #         delta.insert(
-            #             0, delta[0] @ _W.T * self.layers[l].act_f[1](a))
-
-            #     _W = self.layers[l].W
-
-            #     self.layers[l].b = self.layers[l].b - \
-            #         np.mean(delta[0], axis=0, keepdims=True) * lr
-            #     self.layers[l].W = self.layers[l].W - \
-            #         output[l].T @ delta[0] * lr
 
         return self
 
