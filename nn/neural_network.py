@@ -1,5 +1,5 @@
 from nn.layer import Layer
-from nn.loss_functions import loss_function
+from nn.loss import loss_function
 import numpy as np
 
 
@@ -23,13 +23,13 @@ class NeuralNetwork():
             for layer in self.layers[1:]:
                 output = layer.forward(output)
 
-            grade = self.loss_f[1](output, y) * \
+            grade = self.loss_f.loss_prime(y, output) * \
                 layer.act_f.activation_prime(output)
 
             for layer in self.layers[::-1][:-1]:
                 grade = layer.backward(grade, lr)
 
-            loss.append(self.loss_f[0](output, y))
+            loss.append(self.loss_f.loss(y, output))
 
         return loss
 

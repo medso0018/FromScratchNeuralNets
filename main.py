@@ -1,18 +1,8 @@
 import numpy as np
 
+y_true = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
+y_pred = np.array([[0, 0, 1], [0, 1, 0], [1, 0, 0]])
 
-x = np.random.rand(3, 10)
+# print(np.mean(-y_true * np.log(y_pred) - (1 - y_true) * np.log(1 - y_pred)))
 
-w = np.random.rand(3, 3)
-
-b = np.array([
-    [2],
-    [3],
-    [4]
-])
-
-
-print(x @ w + b)
-
-
-print(x)
+print(-y_true * np.log(y_pred) - (1 - y_true) * np.log(1 - y_pred))
