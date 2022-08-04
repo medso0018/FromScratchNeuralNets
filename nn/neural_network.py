@@ -1,6 +1,4 @@
-from nn.layer import Layer
 from nn.loss import loss_function
-import numpy as np
 
 
 class NeuralNetwork():
