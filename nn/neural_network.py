@@ -1,4 +1,5 @@
 from nn.loss import loss_function
+import pandas as pd
 
 
 class NeuralNetwork():
@@ -37,9 +38,28 @@ class NeuralNetwork():
         return loss
 
     # prediction
-
     def predict(self, X):
-        output = X
-        for layer in self.layers[1:]:
-            output = layer.forward(output)
+        output = []
+        for x in X:
+            out = x
+            for layer in self.layers[1:]:
+                out = layer.forward(out)
+            output.append(out)
         return output
+
+    # model's summary
+    def summary(self):
+        summary = {
+            'Type': [],
+            'Activation Function': [],
+            'Input Shape': [],
+            'Output Shape': []
+        }
+
+        for layer in self.layers:
+            summary['Type'].append(layer.__class__.__name__)
+            summary['Activation Function'].append(layer.act_f_name)
+            summary['Input Shape'].append(layer.input_shape)
+            summary['Output Shape'].append(layer.output_shape)
+
+        return pd.DataFrame(summary)

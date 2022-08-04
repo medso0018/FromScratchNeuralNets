@@ -19,8 +19,9 @@ class Layer:
 
 class Input(Layer):
     def __init__(self, input_shape):
-        self.input_shape = input_shape
+        self.input_shape = 'None'
         self.output_shape = input_shape
+        self.act_f_name = 'None'
 
     def forward(self, input):
         self.input = input
@@ -32,6 +33,7 @@ class Dense(Layer):
         self.act_f = activation_function(act_f)
         self.n_neur = n_neur
         self.output_shape = (n_neur, 1)
+        self.act_f_name = act_f.capitalize()
 
         self.b = np.random.rand(n_neur, 1) * 2 - 1
         self.W = None
@@ -39,6 +41,7 @@ class Dense(Layer):
     def connect(self, other_layer):
         self.W = np.random.rand(
             self.n_neur, other_layer.output_shape[0]) * 2 - 1
+        self.input_shape = other_layer.output_shape
 
     def forward(self, input):
         self.input = input
@@ -60,6 +63,7 @@ class Reshape(Layer):
         depth, height, width = other_layer.output_shape
         self.input_shape = other_layer.output_shape
         self.output_shape = (depth * height * width, 1)
+        self.act_f_name = 'None'
 
     def forward(self, input):
         return np.reshape(input, self.output_shape)
@@ -74,6 +78,7 @@ class Convolutional(Layer):
         self.depth = depth
         self.kernel_size = kernel_size
         self.act_f = activation_function(act_f)
+        self.act_f_name = act_f.capitalize()
 
     def connect(self, other_layer):
         self.input_depth, input_height, input_width = other_layer.output_shape

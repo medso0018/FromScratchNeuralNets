@@ -6,6 +6,10 @@ def activation_function(act_f):
         return Sigmoid()
     elif act_f == 'tanh':
         return Tanh()
+    elif act_f == 'linear':
+        return Linear()
+    elif act_f == 'relu':
+        return ReLU()
 
 
 class Activation():
@@ -23,6 +27,28 @@ class Tanh(Activation):
             return 1 - np.tanh(x) ** 2
 
         super().__init__(tanh, tanh_prime)
+
+
+class Linear(Activation):
+    def __init__(self):
+        def linear(x):
+            return x
+
+        def linear_prime(x):
+            return
+
+        super().__init__(linear, linear_prime)
+
+
+class ReLU(Activation):
+    def __init__(self):
+        def relu(x):
+            return 0 if x < 0 else x
+
+        def relu_prime(x):
+            return 0 if x < 0 else 1
+
+        super().__init__(relu, relu_prime)
 
 
 class Sigmoid(Activation):
