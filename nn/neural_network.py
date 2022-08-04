@@ -5,7 +5,7 @@ import numpy as np
 
 class NeuralNetwork():
 
-    def __init__(self, loss_f='mse'):
+    def __init__(self, loss_f='MSE'):
         self.loss_f = loss_function(loss_f=loss_f)
         self.layers = []
 
@@ -16,24 +16,30 @@ class NeuralNetwork():
         self.layers.append(layer)
 
     # train
-    def fit(self, X, y, epoch=1000, lr=0.05):
+    def fit(self, X, Y, epochs=1000, lr=0.05):
         loss = []
-        for _ in range(epoch):
-            output = X
-            for layer in self.layers[1:]:
-                output = layer.forward(output)
+        for _ in range(epochs):
+            error = 0
+            for x, y in zip(X, Y):
 
-            grade = self.loss_f.loss_prime(y, output) * \
-                layer.act_f.activation_prime(output)
+                # forward
+                out = x
+                for layer in self.layers[1:]:
+                    out = layer.forward(out)
 
-            for layer in self.layers[::-1][:-1]:
-                grade = layer.backward(grade, lr)
+                # error
+                error += self.loss_f.loss(y, out)
 
-            loss.append(self.loss_f.loss(y, output))
+                # backward
+                grad = self.loss_f.loss_prime(y, out)
+                for layer in self.layers[::-1][:-1]:
+                    grad = layer.backward(grad, lr)
 
+            loss.append(error / len(Y))
         return loss
 
     # prediction
+
     def predict(self, X):
         output = X
         for layer in self.layers[1:]:
