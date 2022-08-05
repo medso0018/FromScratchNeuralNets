@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import expit
 
 
 def activation_function(act_f):
@@ -43,10 +44,10 @@ class Linear(Activation):
 class ReLU(Activation):
     def __init__(self):
         def relu(x):
-            return 0 if x < 0 else x
+            return np.maximum(0, x)
 
         def relu_prime(x):
-            return 0 if x < 0 else 1
+            return np.where(x > 0, 1, 0)
 
         super().__init__(relu, relu_prime)
 
@@ -54,10 +55,9 @@ class ReLU(Activation):
 class Sigmoid(Activation):
     def __init__(self):
         def sigmoid(x):
-            return 1 / (1 + np.exp(-x))
+            return expit(x)
 
         def sigmoid_prime(x):
-            # s = sigmoid(x)
             return x * (1 - x)
 
         super().__init__(sigmoid, sigmoid_prime)
